@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add your custom CSS file -->
+    
+    <style>
+        /* custom.css */
+        .form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .btn {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <form method="post" th:action="@{/create}" class="form">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter First Name" name="firstName" id="firstname" required>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter Middle Name" name "middleName" id="middlename" required>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter Last Name" name="lastName" id="lastname" required>
+            </div>
+            <button id="btn-submit" type="submit" class="btn btn-primary">Submit</button>
+            <!-- Display the generated password -->
+            <div id="password-display" class="mt-3"></div>
+        </form>
+    </div>
+
+    <script>
+        document.querySelector(".form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const firstName = document.getElementById("firstname").value;
+            const middleName = document.getElementById("middlename").value;
+            const lastName = document.getElementById("lastname").value;
+
+            const randomNumbers = Math.floor(Math.random() * 1000);
+
+            const password = (
+                firstName.slice(0, 2) +
+                middleName.slice(0, 2) +
+                lastName.slice(0, 2) +
+                randomNumbers
+            ).toLowerCase();
+           
+            const newUser = {
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                password: password,
+            };
+
+            const res = await fetch("http://localhost:8086/contextPath/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newUser),
+            });
+
+            // Display the generated password
+            const passwordDisplay = document.getElementById("password-display");
+            passwordDisplay.innerHTML = "Generated Password: " + password;
+        });
+    </script>
+
+    <!-- Add Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
